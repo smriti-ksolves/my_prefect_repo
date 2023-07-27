@@ -1,21 +1,22 @@
-from prefect import flow,task
+from prefect import flow, task
+from prefect.blocks.system import String
+string_block = String.load("string-block")
 
 @task
-def print_task():
-    return ("Hello World Task")
+def create_message():
+    msg = string_block.value
+    return msg
 
 @flow
-
-def get_results():
-    res = 10+5
-    return res
+def create_subflow():
+    value = 100
+    return value
 
 @flow
-def print_results():
-    res = get_results()
-    val = print_results()
-    print(val + str(res))
-
-
+def hello_world():
+    val = create_subflow()
+    msg = create_message()
+    res = msg + str(val)
+    print(res)
 if __name__ == "__main__":
-    print_results()
+    hello_world()
